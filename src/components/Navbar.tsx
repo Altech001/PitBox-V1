@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { NavLink } from './NavLink';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/AuthProvider';
+import { useAuthStore } from '@/hooks/use-auth-store'; //
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +17,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout, isAuthenticated } = useAuth();
+
+  const { logout } = useAuth(); 
+  const { user, isAuthenticated } = useAuthStore(); 
 
   const navItems = [
     { label: 'Movies', to: '/movies', icon: Film },

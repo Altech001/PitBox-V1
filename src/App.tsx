@@ -10,8 +10,9 @@ import { HelmetProvider } from 'react-helmet-async';
 // Global Components
 import ErrorBoundary from "./components/ErrorBoundary";
 import SubscriptionGatedUI from "./components/SubscriptionGatedUI";
-import { AuthProvider, useAuth } from "./providers/AuthProvider";
+import { AuthProvider } from "./providers/AuthProvider";
 import Navbar from "./components/Navbar";
+import { useAuthStore } from "@/hooks/use-auth-store"; //
 
 // Lazy Loaded Pages
 const Index = React.lazy(() => import("./pages/Index"));
@@ -31,11 +32,7 @@ const Wizard = React.lazy(() => import("./components/Wizard"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { 
-      retry: 1, 
-      refetchOnWindowFocus: false, 
-      staleTime: 300000 // 5 minutes
-    },
+    queries: { retry: 1, refetchOnWindowFocus: false, staleTime: 300000 },
   },
 });
 
@@ -46,7 +43,8 @@ const PageLoader = () => (
 );
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user, isLoading } = useAuth();
+  // Pull state directly from Zustand store
+  const { isAuthenticated, user, isLoading } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -60,7 +58,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (isLoading) return <PageLoader />;
   if (!isAuthenticated) return null;
 
-  // Premium Gating: Stay on the route but show the Gated UI if not subscribed
+  // Subscription Logic
   const isSubscriptionPath = location.pathname.startsWith('/subscribe');
   const isAccountPath = location.pathname === '/account';
   
@@ -87,7 +85,6 @@ const App = () => (
             <BrowserRouter>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
-                  {/* Public & Auth */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<SignUp />} />
                   <Route path="/" element={<Index />} />
@@ -95,17 +92,12 @@ const App = () => (
                   <Route path="/movies" element={<MoviesPage />} />
                   <Route path="/series" element={<SeriesPage />} />
                   <Route path="/docs" element={<Docs />} />
-
-                  {/* Subscription Flow (Auth required but not subscription) */}
                   <Route path="/subscribe" element={<ProtectedRoute><OneTime /></ProtectedRoute>} />
                   <Route path="/subscribe/magic" element={<ProtectedRoute><Magic /></ProtectedRoute>} />
                   <Route path="/subscribe/wizard" element={<ProtectedRoute><Wizard /></ProtectedRoute>} />
-
-                  {/* Fully Protected Content */}
                   <Route path="/movie/:id" element={<ProtectedRoute><MovieDetail /></ProtectedRoute>} />
                   <Route path="/series/:id" element={<ProtectedRoute><SeriesDetail /></ProtectedRoute>} />
                   <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

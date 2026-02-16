@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { History, CreditCard, User as UserIcon, Lock, Loader2, AlertCircle, ShieldCheck, ShieldOff, ArrowUpRight } from "lucide-react";
-import { useAuth } from '@/providers/AuthProvider';
+import { useAuthStore } from '@/hooks/use-auth-store'; //
 import { apiClient } from '@/lib/api';
 import type { LoginSessionResponse, SubscriptionStatusResponse, TransactionResponse } from '@/lib/api';
 import { toast } from 'sonner';
@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
 export default function Account() {
-    const { user } = useAuth();
+    const { user } = useAuthStore(); // Read from Store
     const navigate = useNavigate();
 
     // --- Change Password ---
@@ -374,12 +374,10 @@ export default function Account() {
 function InfoItem({ label, value, badge }: { label: string; value: string; badge?: string }) {
     return (
         <div className="space-y-2">
-            <span className="text-[10px] uppercase  text-muted-foreground font-bold">{label}</span>
+            <span className="text-[10px] uppercase text-muted-foreground font-bold">{label}</span>
             <div className="flex items-center gap-3 border-b border-white/5 pb-2">
-                <p className="text-md  font-medium">{value}</p>
-                {badge && (
-                    <Badge variant="default" className="bg-primary text-[10px] h-5 rounded-none font-bold uppercase">{badge}</Badge>
-                )}
+                <p className="text-md font-medium">{value}</p>
+                {badge && <Badge variant="default" className="bg-primary text-[10px] h-5 rounded-none font-bold uppercase">{badge}</Badge>}
             </div>
         </div>
     );

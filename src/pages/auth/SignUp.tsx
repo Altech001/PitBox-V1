@@ -23,7 +23,7 @@ type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 const SignUp = () => {
     const navigate = useNavigate();
-    const { register: registerAccount } = useAuth();
+    const { register: registerAccount } = useAuth(); // Action from Provider
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
