@@ -9,7 +9,12 @@ const headers = {
 
 async function fetcher<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, { headers });
-  if (!res.ok) throw new Error(`TMDB Error: ${res.status}`);
+  
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.status_message || `TMDB Error: ${res.status}`);
+  }
+  
   return res.json();
 }
 

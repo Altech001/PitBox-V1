@@ -110,7 +110,7 @@ export default function Navbar() {
                   <span className="hidden md:inline text-xs font-bold">{user?.username || 'User'}</span>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white/[0.03] backdrop-blur-xl border-white/10 text-white" align="end">
+              <DropdownMenuContent className="w-56 bg-white/[0.005] backdrop-blur-2xl border-white/10 text-white" align="end">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user?.username}</p>
