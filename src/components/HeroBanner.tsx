@@ -23,7 +23,7 @@ export default function HeroBanner({ item }: Props) {
       <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
 
       <div className="relative h-full flex flex-col justify-end p-8 md:p-12 max-w-2xl">
-        <h1 className="text-display text-3xl md:text-5xl font-black uppercase text-foreground mb-3 tracking-tighter leading-tight">
+        <h1 className="text-3xl font-rye md:text-5xl font-normal not-italic uppercase text-foreground mb-3 tracking-tightest">
           {title}
         </h1>
         <div className="flex items-center gap-3 mb-4 text-sm text-muted-foreground">

@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { History, CreditCard, User as UserIcon, Lock, Loader2, AlertCircle, ShieldCheck, ShieldOff, ArrowUpRight } from "lucide-react";
+import { History, CreditCard, User as UserIcon, Lock, Loader2, AlertCircle, ShieldCheck, ShieldOff, ArrowUpRight, Film } from "lucide-react";
 import { useAuthStore } from '@/hooks/use-auth-store'; //
 import { apiClient } from '@/lib/api';
 import type { LoginSessionResponse, SubscriptionStatusResponse, TransactionResponse } from '@/lib/api';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import { Textarea } from '@/components/ui/textarea';
+import { requestsApi } from '@/lib/requests';
 
 export default function Account() {
     const { user } = useAuthStore(); // Read from Store
@@ -78,6 +80,32 @@ export default function Account() {
         },
     });
 
+    // --- Movie Requests ---
+    const [movieName, setMovieName] = useState('');
+    const [movieReason, setMovieReason] = useState('');
+    const [requestingMovie, setRequestingMovie] = useState(false);
+
+    const handleMovieRequest = async () => {
+        if (!movieName.trim()) {
+            toast.error("Please enter a movie name");
+            return;
+        }
+        setRequestingMovie(true);
+        try {
+            await requestsApi.requestMovie({
+                name: movieName,
+                reason: movieReason || 'Requested via PitBox dashboard',
+            });
+            toast.success(`Request for "${movieName}" sent successfully!`);
+            setMovieName('');
+            setMovieReason('');
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to send movie request');
+        } finally {
+            setRequestingMovie(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-background text-foreground">
             <Navbar />
@@ -113,6 +141,13 @@ export default function Account() {
                         >
                             <CreditCard className="w-5 h-5" />
                             Subscription
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="requests"
+                            className="flex-shrink-0 md:w-full justify-start gap-3 px-4 py-4 rounded-none border-b-2 md:border-b-0 md:data-[state=active]:border-r-2 data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary transition-all text-muted-foreground bg-transparent shadow-none font-bold whitespace-nowrap"
+                        >
+                            <Film className="w-5 h-5" />
+                            Request Movies
                         </TabsTrigger>
                     </TabsList>
 
@@ -362,6 +397,50 @@ export default function Account() {
                                         </TableBody>
                                     </Table>
                                 )}
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="requests" className="mt-0 outline-none">
+                            <div className="bg-secondary/20 rounded-none p-6 md:p-12 max-w-2xl">
+                                <h3 className="text-sm font-bold mb-8">Requests</h3>
+                                <div className="space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold  text-muted-foreground">Movie Name</label>
+                                        <Input
+                                            type="text"
+                                            placeholder="@ Bunny, Avengers"
+                                            className="bg-background/50 rounded-none"
+                                            value={movieName}
+                                            onChange={(e) => setMovieName(e.target.value)}
+                                            disabled={requestingMovie}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold   text-muted-foreground">Description</label>
+                                            <Textarea
+                                                placeholder="@My Serie 2- 5"
+                                                className="bg-background/50 rounded-none h-32"
+                                                value={movieReason}
+                                                onChange={(e) => setMovieReason(e.target.value)}
+                                                disabled={requestingMovie}
+                                            />
+                                        </div>
+                                    </div>
+                                    <Button
+                                        className="rounded-none bg-primary text-primary-foreground font-semibold hover:bg-primary/90 px-8 py-6 mt-4"
+                                        onClick={handleMovieRequest}
+                                        disabled={requestingMovie || !movieName.trim()}
+                                    >
+                                        {requestingMovie ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Requesting...
+                                            </>
+                                        ) : (
+                                            'Request Movie'
+                                        )}
+                                    </Button>
+                                </div>
                             </div>
                         </TabsContent>
                     </div>

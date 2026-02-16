@@ -24,6 +24,7 @@ const SearchPage = React.lazy(() => import("./pages/SearchPage"));
 const MoviesPage = React.lazy(() => import("./pages/MoviesPage"));
 const SeriesPage = React.lazy(() => import("./pages/SeriesPage"));
 const Account = React.lazy(() => import("./pages/Account"));
+const RequestsPage = React.lazy(() => import("./pages/RequestsPage"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 const Docs = React.lazy(() => import("./pages/Docs"));
 const OneTime = React.lazy(() => import("./components/OneTime"));
@@ -61,8 +62,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // Subscription Logic
   const isSubscriptionPath = location.pathname.startsWith('/subscribe');
   const isAccountPath = location.pathname === '/account';
-  
-  if (!user?.subscribed && !isSubscriptionPath && !isAccountPath) {
+  const isRequestsPath = location.pathname === '/requests';
+
+  if (!user?.subscribed && !isSubscriptionPath && !isAccountPath && !isRequestsPath) {
     return (
       <div className="min-h-screen bg-black">
         <Navbar />
@@ -92,6 +94,7 @@ const App = () => (
                   <Route path="/movies" element={<MoviesPage />} />
                   <Route path="/series" element={<SeriesPage />} />
                   <Route path="/docs" element={<Docs />} />
+                  <Route path="/requests" element={<ProtectedRoute><RequestsPage /></ProtectedRoute>} />
                   <Route path="/subscribe" element={<ProtectedRoute><OneTime /></ProtectedRoute>} />
                   <Route path="/subscribe/magic" element={<ProtectedRoute><Magic /></ProtectedRoute>} />
                   <Route path="/subscribe/wizard" element={<ProtectedRoute><Wizard /></ProtectedRoute>} />

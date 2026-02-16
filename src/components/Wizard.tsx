@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, ShieldCheck, Smartphone, Timer, AlertCircle } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
+import { paymentApi } from "@/lib/payment";
+import { storage } from "@/lib/storage";
 
 const Wizard = () => {
     const navigate = useNavigate();
@@ -16,13 +18,13 @@ const Wizard = () => {
     // If we came from a voucher redemption, skip straight to success
     const redeemed = location.state?.redeemed;
 
-    // Plan info from localStorage
-    const planId = localStorage.getItem("sub_plan_id") || "";
-    const planName = localStorage.getItem("sub_plan_name") || "";
-    const planPrice = localStorage.getItem("sub_plan_price") || "";
-    const planCurrency = localStorage.getItem("sub_plan_currency") || "UGX";
-    const planDays = localStorage.getItem("sub_plan_days") || "";
-    const phoneNumber = localStorage.getItem("sub_phone") || "";
+    // Plan info from storage/localStorage
+    const planId = storage.get<string>("sub_plan_id") || "";
+    const planName = storage.get<string>("sub_plan_name") || "";
+    const planPrice = storage.get<string>("sub_plan_price") || "";
+    const planCurrency = storage.get<string>("sub_plan_currency") || "UGX";
+    const planDays = storage.get<string>("sub_plan_days") || "";
+    const phoneNumber = storage.get<string>("sub_phone") || "";
 
     // Subscribe via API
     useEffect(() => {
@@ -42,32 +44,63 @@ const Wizard = () => {
 
         const doSubscribe = async () => {
             try {
-                const res = await apiClient.subscriptions.subscribeSubscriptionsSubscribePost({
+                // 1. Initialize intent in PitBox Backend
+                const subRes = await apiClient.subscriptions.subscribeSubscriptionsSubscribePost({
                     package_id: planId,
                     phone_number: phoneNumber,
                 });
 
-                // Animate to confirming
-                setStatus("confirming");
+                const reference = subRes.data.id;
 
-                // Simulate waiting for mobile money confirmation
-                // In production, you'd poll for status here
-                setTimeout(() => {
-                    setProgress(100);
-                    setTimeout(() => {
-                        setStatus("success");
-                        toast.success("Subscription activated!");
-                        // Clean up
-                        localStorage.removeItem("sub_plan_id");
-                        localStorage.removeItem("sub_plan_name");
-                        localStorage.removeItem("sub_plan_price");
-                        localStorage.removeItem("sub_plan_currency");
-                        localStorage.removeItem("sub_plan_days");
-                        localStorage.removeItem("sub_phone");
-                    }, 800);
-                }, 3000);
+                // 2. Initialize real payment via MintosPay
+                const payRes = await paymentApi.initialize({
+                    amount: Number(planPrice),
+                    phone_number: phoneNumber,
+                    reference: reference,
+                    country: "UG",
+                    description: `PitBox ${planName} Subscription`,
+                    callback_url: "https://mintos-vd.vercel.app/api/payments/webhook", // This endpoint should handle success/fail on server
+                });
+
+                const uuid = payRes.data.transaction.uuid;
+
+                // 3. Update UI to confirming (waiting for user PIN)
+                setStatus("confirming");
+                toast.info("Collection initiated. Check your phone!");
+
+                // 4. Poll for actual transaction status
+                const pollInterval = setInterval(async () => {
+                    try {
+                        const verifyRes = await paymentApi.verify(uuid);
+                        const trxStatus = verifyRes.data.transaction.status;
+
+                        if (trxStatus === 'success' || trxStatus === 'completed') {
+                            clearInterval(pollInterval);
+                            setProgress(100);
+                            setTimeout(() => {
+                                setStatus("success");
+                                toast.success("Subscription activated!");
+                                storage.clearSubscriptionData();
+                            }, 800);
+                        } else if (trxStatus === 'failed') {
+                            clearInterval(pollInterval);
+                            setErrorMessage("Payment failed. Please try again or ensure you have sufficient balance.");
+                            setStatus("error");
+                            toast.error("Payment failed");
+                        }
+                        // If 'processing', continue polling
+                    } catch (pollError) {
+                        console.error("Polling error:", pollError);
+                        // We continue polling despite temporary network errors
+                    }
+                }, 5000); // Poll every 5 seconds
+
+                // Optional: Stop polling after 3 minutes (timeout)
+                setTimeout(() => clearInterval(pollInterval), 180000);
+
             } catch (error: any) {
-                const message = error.error?.detail?.[0]?.msg || error.error?.detail || "Subscription failed. Please try again.";
+                console.error("Subscription Error:", error);
+                const message = error.error?.detail?.[0]?.msg || error.error?.detail || "Transaction failed. Please try again.";
                 setErrorMessage(message);
                 setStatus("error");
                 toast.error(message);
@@ -75,7 +108,7 @@ const Wizard = () => {
         };
 
         doSubscribe();
-    }, [redeemed, planId, phoneNumber, navigate]);
+    }, [redeemed, planId, phoneNumber, planPrice, planName, navigate]);
 
     // Progress animation  
     useEffect(() => {

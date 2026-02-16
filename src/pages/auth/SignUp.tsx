@@ -54,79 +54,85 @@ const SignUp = () => {
 
     if (isSuccess) {
         return (
-            <AuthLayout title="Account Created" subtitle="You're all set!">
-                <div className="flex flex-col items-center justify-center py-8 space-y-4">
-                    <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center">
-                        <CheckCircle2 className="w-10 h-10 text-primary animate-pulse" />
+            <AuthLayout>
+                <div className="flex flex-col items-center justify-center py-12 space-y-6">
+                    <div className="relative">
+                        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center animate-pulse">
+                            <CheckCircle2 className="w-12 h-12 text-primary" />
+                        </div>
+                        <div className="absolute inset-0 border border-primary/20 rounded-full animate-ping" />
                     </div>
-                    <p className="text-white/60 text-center">
-                        Redirecting you to the login page...
-                    </p>
+                    <div className="text-center space-y-2">
+                        <h3 className="text-white font-bold text-lg rounded-none ">Registration Complete</h3>
+                        <p className="text-white/40 text-[10px] rounded-none ">
+                            Preparing your dashboard...
+                        </p>
+                    </div>
                 </div>
             </AuthLayout>
         );
     }
 
     return (
-        <AuthLayout title="Create Account" subtitle="Join the PitBox community">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white/70">Email Address</Label>
-                    <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+        <AuthLayout>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="space-y-1.5 focus-within:translate-x-1 transition-transform">
+                    <Label htmlFor="email" className="text-white/50 text-[10px] rounded-none  ml-1">Email Address</Label>
+                    <div className="relative group">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
                         <Input
                             id="email"
                             type="email"
-                            placeholder="name@example.com"
-                            className="bg-white/[0.05] border-white/10 text-white pl-10 focus:border-primary/50 focus:ring-primary/20"
+                            placeholder="engine@pitbox.com"
+                            className="bg-white/[0.03] border-white/5 text-white h-12 pl-12 rounded-none focus:border-primary/30 focus:ring-primary/10 transition-all placeholder:text-white/10"
                             {...register('email')}
                             disabled={isLoading}
                         />
                     </div>
                     {errors.email && (
-                        <div className="flex items-center gap-1.5 text-xs text-red-500 mt-1">
+                        <div className="flex items-center gap-1.5 text-[10px] text-red-400 mt-1 ml-1">
                             <AlertCircle className="w-3 h-3" />
                             <span>{errors.email.message}</span>
                         </div>
                     )}
                 </div>
 
-                <div className="space-y-2">
-                    <Label htmlFor="password" className="text-white/70">Password</Label>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <div className="space-y-1.5 focus-within:translate-x-1 transition-transform">
+                    <Label htmlFor="password" className="text-white/50 text-[10px] rounded-none  ml-1">Password</Label>
+                    <div className="relative group">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
                         <Input
                             id="password"
                             type="password"
                             placeholder="••••••••"
-                            className="bg-white/[0.05] border-white/10 text-white pl-10 focus:border-primary/50 focus:ring-primary/20"
+                            className="bg-white/[0.03] border-white/5 text-white h-12 pl-12 rounded-none focus:border-primary/30 focus:ring-primary/10 transition-all placeholder:text-white/10"
                             {...register('password')}
                             disabled={isLoading}
                         />
                     </div>
                     {errors.password && (
-                        <div className="flex items-center gap-1.5 text-xs text-red-500 mt-1">
+                        <div className="flex items-center gap-1.5 text-[10px] text-red-400 mt-1 ml-1">
                             <AlertCircle className="w-3 h-3" />
                             <span>{errors.password.message}</span>
                         </div>
                     )}
                 </div>
 
-                <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-white/70">Confirm Password</Label>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <div className="space-y-1.5 focus-within:translate-x-1 transition-transform">
+                    <Label htmlFor="confirmPassword" className="text-white/50 text-[10px] rounded-none ml-1">Confirm Password</Label>
+                    <div className="relative group">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
                         <Input
                             id="confirmPassword"
                             type="password"
                             placeholder="••••••••"
-                            className="bg-white/[0.05] border-white/10 text-white pl-10 focus:border-primary/50 focus:ring-primary/20"
+                            className="bg-white/[0.03] border-white/5 text-white h-12 pl-12 rounded-none focus:border-primary/30 focus:ring-primary/10 transition-all placeholder:text-white/10"
                             {...register('confirmPassword')}
                             disabled={isLoading}
                         />
                     </div>
                     {errors.confirmPassword && (
-                        <div className="flex items-center gap-1.5 text-xs text-red-500 mt-1">
+                        <div className="flex items-center gap-1.5 text-[10px] text-red-400 mt-1 ml-1">
                             <AlertCircle className="w-3 h-3" />
                             <span>{errors.confirmPassword.message}</span>
                         </div>
@@ -135,39 +141,20 @@ const SignUp = () => {
 
                 <Button
                     type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-6 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full bg-primary hover:bg-primary/90 text-black font-black rounded-none  h-14 rounded-none transition-all shadow-[0_10px_20px_rgba(var(--primary),0.2)] active:scale-[0.98] mt-6"
                     disabled={isLoading}
                 >
                     {isLoading ? (
                         <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Creating account...
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin text-black" />
+                            Calibrating...
                         </>
                     ) : (
                         <>
-                            <UserPlus className="mr-2 h-4 w-4" />
+                            <UserPlus className="mr-2 h-4 w-4 text-black" />
                             Create Account
                         </>
                     )}
-                </Button>
-
-                <div className="relative my-8">
-                    <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-white/10" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-black px-2 text-white/40 tracking-widest">Already have an account?</span>
-                    </div>
-                </div>
-
-                <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full border-white/10 text-white hover:bg-white/5 py-6 rounded-xl"
-                    onClick={() => navigate('/login')}
-                    disabled={isLoading}
-                >
-                    Sign In
                 </Button>
             </form>
         </AuthLayout>

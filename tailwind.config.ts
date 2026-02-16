@@ -68,6 +68,7 @@ export default {
       },
       fontFamily: {
         'permanent-marker': ['"Permanent Marker"', 'cursive'],
+        'rye': ['Rye', 'cursive'],
       },
       keyframes: {
         "accordion-down": {

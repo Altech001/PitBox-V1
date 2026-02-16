@@ -63,14 +63,14 @@ export default function HeroCarousel({ items }: Props) {
         />
       ))}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
 
       {/* Content */}
       <div className="relative h-full flex flex-col justify-end p-8 md:p-12 max-w-2xl">
         <h1
           key={item.id}
-          className="text-display text-3xl font-permanent-marker md:text-5xl font-normal not-italic uppercase text-foreground mb-3 tracking-tightest animate-fade-in"
+          className="text-3xl font-rye md:text-5xl font-normal not-italic uppercase text-foreground mb-3 tracking-tightest animate-fade-in"
         >
           {title}
         </h1>

@@ -1,4 +1,4 @@
-import { Search, User, Tv, Film, Sparkles, LogOut, ShieldCheck } from 'lucide-react';
+import { Search, User, Tv, Film, Sparkles, LogOut, ShieldCheck, Clock } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { NavLink } from './NavLink';
 import { cn } from '@/lib/utils';
@@ -18,13 +18,14 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { logout } = useAuth(); 
-  const { user, isAuthenticated } = useAuthStore(); 
+  const { logout } = useAuth();
+  const { user, isAuthenticated } = useAuthStore();
 
   const navItems = [
     { label: 'Movies', to: '/movies', icon: Film },
     { label: 'Series', to: '/series', icon: Tv },
-    { label: 'API Docs', to: '/docs', icon: Sparkles },
+    { label: 'Requests', to: '/requests', icon: Clock },
+    // { label: 'API Docs', to: '/docs', icon: Sparkles },
   ];
 
   return (
