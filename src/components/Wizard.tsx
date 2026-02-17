@@ -26,7 +26,7 @@ const Wizard = () => {
     const planDays = storage.get<string>("sub_plan_days") || "";
     const phoneNumber = storage.get<string>("sub_phone") || "";
 
-    // Subscribe via API
+    // Payment-first flow: Only subscribe AFTER payment is confirmed
     useEffect(() => {
         if (redeemed) {
             setProgress(100);
@@ -42,33 +42,28 @@ const Wizard = () => {
 
         hasSubscribed.current = true;
 
-        const doSubscribe = async () => {
+        const doPaymentFirst = async () => {
             try {
-                // 1. Initialize intent in PitBox Backend
-                const subRes = await apiClient.subscriptions.subscribeSubscriptionsSubscribePost({
-                    package_id: planId,
-                    phone_number: phoneNumber,
-                });
+                // Generate a proper UUID v4 reference for the payment
+                const tempReference = crypto.randomUUID();
 
-                const reference = subRes.data.id;
-
-                // 2. Initialize real payment via MintosPay
+                // 1. Initialize payment via MintosPay FIRST (no subscription created yet)
                 const payRes = await paymentApi.initialize({
                     amount: Number(planPrice),
                     phone_number: phoneNumber,
-                    reference: reference,
+                    reference: tempReference,
                     country: "UG",
                     description: `PitBox ${planName} Subscription`,
-                    callback_url: "https://mintos-vd.vercel.app/api/payments/webhook", // This endpoint should handle success/fail on server
+                    callback_url: "https://mintos-vd.vercel.app/api/payments/webhook",
                 });
 
                 const uuid = payRes.data.transaction.uuid;
 
-                // 3. Update UI to confirming (waiting for user PIN)
+                // 2. Update UI to confirming (waiting for user PIN)
                 setStatus("confirming");
                 toast.info("Collection initiated. Check your phone!");
 
-                // 4. Poll for actual transaction status
+                // 3. Poll for actual payment status
                 const pollInterval = setInterval(async () => {
                     try {
                         const verifyRes = await paymentApi.verify(uuid);
@@ -76,14 +71,33 @@ const Wizard = () => {
 
                         if (trxStatus === 'success' || trxStatus === 'completed') {
                             clearInterval(pollInterval);
-                            setProgress(100);
-                            setTimeout(() => {
-                                setStatus("success");
-                                toast.success("Subscription activated!");
-                                storage.clearSubscriptionData();
-                            }, 800);
+
+                            // 4. Payment confirmed! NOW create the subscription
+                            try {
+                                await apiClient.subscriptions.subscribeSubscriptionsSubscribePost({
+                                    package_id: planId,
+                                    phone_number: phoneNumber,
+                                });
+
+                                setProgress(100);
+                                setTimeout(() => {
+                                    setStatus("success");
+                                    toast.success("Subscription activated!");
+                                    storage.clearSubscriptionData();
+                                    storage.set("pitbox_premium", "true");
+                                }, 800);
+                            } catch (subError: any) {
+                                console.error("Subscription creation error after payment:", subError);
+                                const subMessage = subError.error?.detail?.[0]?.msg ||
+                                    subError.error?.detail ||
+                                    "Payment was successful but subscription activation failed. Please contact support.";
+                                setErrorMessage(subMessage);
+                                setStatus("error");
+                                toast.error(subMessage);
+                            }
                         } else if (trxStatus === 'failed') {
                             clearInterval(pollInterval);
+                            // Payment failed — NO subscription is created
                             setErrorMessage("Payment failed. Please try again or ensure you have sufficient balance.");
                             setStatus("error");
                             toast.error("Payment failed");
@@ -95,19 +109,30 @@ const Wizard = () => {
                     }
                 }, 5000); // Poll every 5 seconds
 
-                // Optional: Stop polling after 3 minutes (timeout)
-                setTimeout(() => clearInterval(pollInterval), 180000);
+                // Timeout: Stop polling after 3 minutes
+                setTimeout(() => {
+                    clearInterval(pollInterval);
+                    // If still not resolved after timeout, show error
+                    setStatus((currentStatus) => {
+                        if (currentStatus !== "success" && currentStatus !== "error") {
+                            setErrorMessage("Payment timed out. If you were charged, please contact support.");
+                            toast.error("Payment timed out");
+                            return "error";
+                        }
+                        return currentStatus;
+                    });
+                }, 180000);
 
             } catch (error: any) {
-                console.error("Subscription Error:", error);
-                const message = error.error?.detail?.[0]?.msg || error.error?.detail || "Transaction failed. Please try again.";
+                console.error("Payment Initialization Error:", error);
+                const message = error.message || "Failed to initialize payment. Please try again.";
                 setErrorMessage(message);
                 setStatus("error");
                 toast.error(message);
             }
         };
 
-        doSubscribe();
+        doPaymentFirst();
     }, [redeemed, planId, phoneNumber, planPrice, planName, navigate]);
 
     // Progress animation  

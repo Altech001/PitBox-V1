@@ -9,9 +9,38 @@ import { apiClient } from "@/lib/api";
 import { useAuth } from "@/providers/AuthProvider";
 import { storage } from "@/lib/storage";
 
+/**
+ * Normalizes a Ugandan phone number to the +256 international format.
+ * Handles inputs like: "0712345678", "256712345678", "+256712345678",
+ * "0712 345 678", "+256 712 345 678", "712345678", etc.
+ */
+const formatPhoneNumber = (raw: string): string => {
+    // Strip all non-digit characters except the leading +
+    const stripped = raw.replace(/\s+/g, "").replace(/-/g, "");
+
+    // Already in +256 format
+    if (stripped.startsWith("+256")) {
+        return stripped;
+    }
+    // Starts with 256 (no +)
+    if (stripped.startsWith("256") && stripped.length >= 12) {
+        return `+${stripped}`;
+    }
+    // Starts with 0 (local format)
+    if (stripped.startsWith("0") && stripped.length >= 10) {
+        return `+256${stripped.slice(1)}`;
+    }
+    // Starts with 7 (no prefix)
+    if (stripped.startsWith("7") && stripped.length >= 9) {
+        return `+256${stripped}`;
+    }
+    // Return as-is if we can't determine format — API will validate
+    return stripped;
+};
+
 const Magic = () => {
     const navigate = useNavigate();
-    
+
     // Best Practice: Initialize state from storage to avoid layout shift/flash
     const [phoneNumber, setPhoneNumber] = useState(() => storage.get<string>("sub_phone") || "");
     const [promoCode, setPromoCode] = useState("");
@@ -43,29 +72,31 @@ const Magic = () => {
             return;
         }
 
+        const formattedPhone = formatPhoneNumber(phoneNumber);
+
         setIsRedeeming(true);
         try {
             const res = await apiClient.subscriptions.redeemAccessTokenSubscriptionsRedeemPost({
                 code: promoCode.trim(),
-                phone_number: phoneNumber.trim(),
+                phone_number: formattedPhone,
             });
-            
+
             toast.success(res.data.message || "Code redeemed successfully!");
-            
+
             // Centralized cleanup
             storage.clearSubscriptionData();
             storage.set("pitbox_premium", "true");
-            
-            navigate("/subscribe/wizard", { 
-                state: { 
-                    redeemed: true, 
-                    subscription: res.data.subscription 
-                } 
+
+            navigate("/subscribe/wizard", {
+                state: {
+                    redeemed: true,
+                    subscription: res.data.subscription
+                }
             });
         } catch (error: any) {
-            const message = error.error?.detail?.[0]?.msg || 
-                            error.error?.detail || 
-                            "Invalid or expired code";
+            const message = error.error?.detail?.[0]?.msg ||
+                error.error?.detail ||
+                "Invalid or expired code";
             toast.error(message);
         } finally {
             setIsRedeeming(false);
@@ -77,7 +108,9 @@ const Magic = () => {
             toast.error("Please enter your phone number");
             return;
         }
-        storage.set("sub_phone", phoneNumber);
+        // Save the formatted phone number for consistent API usage
+        const formattedPhone = formatPhoneNumber(phoneNumber);
+        storage.set("sub_phone", formattedPhone);
         navigate("/subscribe/wizard");
     };
 
@@ -111,7 +144,7 @@ const Magic = () => {
                         </Label>
                         <Input
                             id="phone"
-                            placeholder="07XX XXX XXX"
+                            placeholder="+256 7XX XXX XXX"
                             value={phoneNumber}
                             onChange={(e) => setPhoneNumber(e.target.value)}
                             className="bg-transparent border-white/10 rounded-none h-14 font-bold focus:border-primary transition-all px-0 border-x-0 border-t-0"
