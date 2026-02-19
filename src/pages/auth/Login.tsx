@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/providers/AuthProvider';
 import AuthLayout from '@/components/auth/AuthLayout';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -47,6 +48,11 @@ const Login = () => {
 
     return (
         <AuthLayout>
+            <SEO
+                title="Sign In"
+                description="Sign in to your PitBox account. Access premium movie streaming, Ugandan films, and exclusive content."
+                canonicalPath="/login"
+            />
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div className="space-y-1.5">
                     <Label htmlFor="email" className="text-white/50 text-[10px] rounded-none  ml-1">Email Address</Label>

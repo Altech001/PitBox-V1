@@ -1,8 +1,17 @@
+# PitBox Robots.txt
+# https://www.pitbox.fun
+
 User-agent: Googlebot
 Allow: /
+Disallow: /account
+Disallow: /subscribe/magic
+Disallow: /subscribe/wizard
 
 User-agent: Bingbot
 Allow: /
+Disallow: /account
+Disallow: /subscribe/magic
+Disallow: /subscribe/wizard
 
 User-agent: Twitterbot
 Allow: /
@@ -12,3 +21,12 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /account
+Disallow: /subscribe/magic
+Disallow: /subscribe/wizard
+
+# Sitemap location
+Sitemap: https://www.pitbox.fun/sitemap.xml
+
+# Host
+Host: https://www.pitbox.fun

@@ -1,6 +1,7 @@
 import { ApiReferenceReact } from '@scalar/api-reference-react'
 import '@scalar/api-reference-react/style.css'
 import { Button } from '@/components/ui/button'
+import SEO from '@/components/SEO'
 import { ChevronLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,6 +10,12 @@ const Docs = () => {
 
     return (
         <div className="min-h-screen bg-background">
+            <SEO
+                title="API Documentation"
+                description="PitBox Developer API Reference. Explore endpoints, authentication, and integration guides for the PitBox streaming platform."
+                canonicalPath="/docs"
+                noindex={true}
+            />
             <div className="border-b border-white/10 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
                 <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">

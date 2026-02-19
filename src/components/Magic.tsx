@@ -3,11 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, Gift, Phone, Loader2 } from "lucide-react";
+import { ChevronLeft, Gift, Phone, Loader2, Ticket } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api";
 import { useAuth } from "@/providers/AuthProvider";
 import { storage } from "@/lib/storage";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
 
 /**
  * Normalizes a Ugandan phone number to the +256 international format.
@@ -45,6 +52,7 @@ const Magic = () => {
     const [phoneNumber, setPhoneNumber] = useState(() => storage.get<string>("sub_phone") || "");
     const [promoCode, setPromoCode] = useState("");
     const [isRedeeming, setIsRedeeming] = useState(false);
+    const [showRedeemDialog, setShowRedeemDialog] = useState(false);
 
     // Plan info state (Initialized from storage)
     const [planName] = useState(() => storage.get<string>("sub_plan_name") || "");
@@ -86,6 +94,8 @@ const Magic = () => {
             // Centralized cleanup
             storage.clearSubscriptionData();
             storage.set("pitbox_premium", "true");
+
+            setShowRedeemDialog(false);
 
             navigate("/subscribe/wizard", {
                 state: {
@@ -150,46 +160,9 @@ const Magic = () => {
                             className="bg-transparent border-white/10 rounded-none h-14 font-bold focus:border-primary transition-all px-0 border-x-0 border-t-0"
                         />
                     </div>
-
-                    {/* Voucher Input */}
-                    <div className="space-y-2">
-                        <Label htmlFor="promo" className="text-[10px] text-muted-foreground uppercase font-black flex items-center gap-2">
-                            <Gift className="w-3 h-3" />
-                            Voucher / Promo Code
-                        </Label>
-                        <div className="flex gap-3 items-end">
-                            <Input
-                                id="promo"
-                                placeholder="ENTER CODE"
-                                value={promoCode}
-                                onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                                className="bg-transparent border-white/10 rounded-none h-14 uppercase font-bold focus:border-primary transition-all px-0 border-x-0 border-t-0 flex-1"
-                            />
-                            <Button
-                                variant="outline"
-                                className="rounded-none h-14 border-primary/30 text-primary hover:bg-primary/10 font-black uppercase text-[10px] px-6"
-                                onClick={handleRedeemCode}
-                                disabled={isRedeeming || !promoCode}
-                            >
-                                {isRedeeming ? <Loader2 className="w-4 h-4 animate-spin" /> : "Redeem"}
-                            </Button>
-                        </div>
-                        <p className="text-[9px] text-muted-foreground/50 uppercase font-bold">
-                            Have a voucher code? Redeem it here to skip payment
-                        </p>
-                    </div>
                 </div>
 
                 <div className="space-y-6">
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t border-white/10" />
-                        </div>
-                        <div className="relative flex justify-center text-[9px] uppercase">
-                            <span className="bg-background px-3 text-muted-foreground/40 font-black tracking-widest">Or pay with mobile money</span>
-                        </div>
-                    </div>
-
                     <Button
                         className="w-full h-14 bg-white text-black hover:bg-primary hover:text-black rounded-none font-black uppercase transition-all group"
                         onClick={handleProcessPayment}
@@ -197,6 +170,24 @@ const Magic = () => {
                     >
                         Pay {planPrice} {planCurrency}
                     </Button>
+
+                    {/* Redeem Code Button */}
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t border-white/10" />
+                        </div>
+                        <div className="relative flex justify-center text-[9px] uppercase">
+                            <span className="bg-background px-3 text-muted-foreground/40 font-black tracking-widest">Or</span>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={() => setShowRedeemDialog(true)}
+                        className="w-full flex items-center justify-center gap-2 py-3 border border-dashed border-white/10 hover:border-primary/40 text-muted-foreground hover:text-primary transition-all group"
+                    >
+                        <Ticket className="w-4 h-4 group-hover:text-primary transition-colors" />
+                        <span className="text-[10px] font-black uppercase tracking-widest">I have a redeem code</span>
+                    </button>
 
                     {planId && (
                         <div className="flex items-center justify-between border-t border-white/5 pt-6 opacity-40">
@@ -213,6 +204,71 @@ const Magic = () => {
                 </div>
             </div>
 
+            {/* Redeem Code Dialog */}
+            <div className="m-2 px-2">
+                <Dialog open={showRedeemDialog} onOpenChange={setShowRedeemDialog}>
+                    <DialogContent className="sm:max-w-md border-white/10 bg-background ">
+                        <DialogHeader>
+                            <DialogTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-2">
+                                <Gift className="w-5 h-5 text-primary" />
+                                Redeem <span className="text-primary">Code</span>
+                            </DialogTitle>
+                            <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                                Enter your voucher or promo code to activate your subscription
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="space-y-5 pt-2">
+                            {/* Phone in dialog (pre-filled from main form) */}
+                            <div className="space-y-2">
+                                <Label htmlFor="redeem-phone" className="text-[10px] text-muted-foreground uppercase font-black flex items-center gap-2">
+                                    <Phone className="w-3 h-3" />
+                                    Phone Number
+                                </Label>
+                                <Input
+                                    id="redeem-phone"
+                                    placeholder="+256 7XX XXX XXX"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    className="bg-transparent border-white/10 rounded-none h-12 font-bold focus:border-primary transition-all px-0 border-x-0 border-t-0"
+                                />
+                            </div>
+
+                            {/* Code Input */}
+                            <div className="space-y-2">
+                                <Label htmlFor="redeem-code" className="text-[10px] text-muted-foreground uppercase font-black flex items-center gap-2">
+                                    <Ticket className="w-3 h-3" />
+                                    Voucher / Promo Code
+                                </Label>
+                                <Input
+                                    id="redeem-code"
+                                    placeholder="ENTER CODE"
+                                    value={promoCode}
+                                    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                                    className="bg-transparent border-white/10 rounded-none h-12 uppercase font-bold tracking-widest focus:border-primary transition-all px-0 border-x-0 border-t-0 text-lg"
+                                    autoFocus
+                                />
+                            </div>
+
+                            <Button
+                                className="w-full h-12 bg-primary text-black hover:bg-primary/90 rounded-none font-black uppercase text-xs tracking-widest transition-all"
+                                onClick={handleRedeemCode}
+                                disabled={isRedeeming || !promoCode}
+                            >
+                                {isRedeeming ? (
+                                    <span className="flex items-center gap-2">
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        Redeeming...
+                                    </span>
+                                ) : (
+                                    "Redeem Code"
+                                )}
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+
+            </div>
             <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,_rgba(234,179,8,0.05)_0%,_transparent_50%)]" />
         </div>
     );

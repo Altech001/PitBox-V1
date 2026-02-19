@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.pitbox.fun/</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.pitbox.fun/opengraph-image-p98pqg.png</image:loc>
+      <image:title>PitBox - Premium Movie Streaming Platform</image:title>
+      <image:caption>Stream Ugandan movies, Hollywood blockbusters, and series on PitBox</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Movies Library -->
+  <url>
+    <loc>https://www.pitbox.fun/movies</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Series Library -->
+  <url>
+    <loc>https://www.pitbox.fun/series</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Search -->
+  <url>
+    <loc>https://www.pitbox.fun/search</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Movie Requests -->
+  <url>
+    <loc>https://www.pitbox.fun/requests</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Authentication: Login -->
+  <url>
+    <loc>https://www.pitbox.fun/login</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Authentication: Sign Up -->
+  <url>
+    <loc>https://www.pitbox.fun/signup</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Subscription Plans -->
+  <url>
+    <loc>https://www.pitbox.fun/subscribe</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

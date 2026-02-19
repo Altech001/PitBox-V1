@@ -69,7 +69,7 @@ const Wizard = () => {
                         const verifyRes = await paymentApi.verify(uuid);
                         const trxStatus = verifyRes.data.transaction.status;
 
-                        if (trxStatus === 'success' || trxStatus === 'completed') {
+                        if (trxStatus === 'completed' || trxStatus === 'success') {
                             clearInterval(pollInterval);
 
                             // 4. Payment confirmed! NOW create the subscription

@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { moviesApi, normalizePitBoxSeries } from '@/lib/pitbox';
 import Navbar from '@/components/Navbar';
+import SEO from '@/components/SEO';
 import VirtualGrid from '@/components/VirtualGrid';
 import { useMemo, useRef, useEffect, useState } from 'react';
 import { Loader2, Filter } from 'lucide-react';
@@ -111,6 +112,12 @@ export default function SeriesPage() {
 
     return (
         <div className="min-h-screen bg-background">
+            <SEO
+                title="Series"
+                description="Browse and stream trending Ugandan series, TV shows, and episodic content in premium quality on PitBox."
+                canonicalPath="/series"
+                keywords="series, TV shows, Ugandan series, African TV, episodes, streaming series, drama series"
+            />
             <Navbar />
             <div className="pt-24 md:pt-32 pb-1">
 

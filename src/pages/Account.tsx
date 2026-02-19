@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Textarea } from '@/components/ui/textarea';
 import { requestsApi } from '@/lib/requests';
+import SEO from '@/components/SEO';
 
 export default function Account() {
     const { user } = useAuthStore(); // Read from Store
@@ -108,6 +109,12 @@ export default function Account() {
 
     return (
         <div className="min-h-screen bg-background text-foreground">
+            <SEO
+                title="My Account"
+                description="Manage your PitBox account, subscription, security settings, and request movies."
+                canonicalPath="/account"
+                noindex={true}
+            />
             <Navbar />
             <main className="max-w-6xl mx-auto pt-24 md:pt-32 px-4 md:px-6 pb-20">
 

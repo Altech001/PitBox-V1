@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { moviesApi, normalizePitBoxMovie } from '@/lib/pitbox';
 import Navbar from '@/components/Navbar';
+import SEO from '@/components/SEO';
 import VirtualGrid from '@/components/VirtualGrid';
 import { useMemo, useRef, useEffect, useState } from 'react';
 import { Loader2, Film } from 'lucide-react';
@@ -99,6 +100,12 @@ export default function MoviesPage() {
 
     return (
         <div className="min-h-screen bg-background">
+            <SEO
+                title="Movies"
+                description="Browse and stream the latest Ugandan movies, Hollywood blockbusters, and African films in premium quality on PitBox."
+                canonicalPath="/movies"
+                keywords="movies, Ugandan movies, Hollywood movies, African films, action movies, drama, comedy, streaming"
+            />
             <Navbar />
             <div className="pt-24 md:pt-32 pb-1">
 

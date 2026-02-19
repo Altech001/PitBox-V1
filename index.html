@@ -5,30 +5,152 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>PitBox - Premium Movie Streaming | Ugandan & International Films</title>
-  <meta name="description" content="PitBox.fun - Watch and stream the latest Ugandan movies, Hollywood blockbusters, series, and more in premium quality. Discover thrilling action, drama, comedy, and exclusive releases from Uganda and beyond.">
-  <meta name="author" content="merite">
-  <meta name="keywords" content="PitBox, Ugandan movies, Luganda films, movie streaming Uganda, watch movies online, Hollywood movies, African films, premium streaming, latest releases, action movies, drama series">
+  <!-- PWA Manifest & Theme -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#8B5CF6" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PitBox" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-  <!-- Robots (optional - only add if you want to force indexing; remove if already in robots.txt) -->
-  <!-- <meta name="robots" content="index, follow"> -->
+  <!-- Primary Meta Tags -->
+  <title>PitBox - Premium Movie Streaming | Ugandan Films & Series</title>
+  <meta name="description"
+    content="PitBox.fun - Watch and stream the latest Ugandan movies, Hollywood blockbusters, series, and more in premium quality. Discover thrilling action, drama, comedy, and exclusive releases from Uganda and beyond.">
+  <meta name="author" content="PitBox">
+  <meta name="keywords"
+    content="PitBox, Ugandan movies, Luganda films, movie streaming Uganda, watch movies online, Hollywood movies, African films, premium streaming, latest releases, action movies, drama series, PitBox.fun">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://www.pitbox.fun/">
+
+  <!-- Geo Tags -->
+  <meta name="geo.region" content="UG" />
+  <meta name="geo.placename" content="Uganda" />
+
+  <!-- Language & Content -->
+  <meta http-equiv="content-language" content="en" />
+  <meta name="language" content="English" />
+  <meta name="rating" content="general" />
+  <meta name="revisit-after" content="3 days" />
+  <meta name="distribution" content="global" />
+
+  <!-- Mobile Optimization -->
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="PitBox" />
+  <meta name="msapplication-TileColor" content="#8B5CF6" />
+  <meta name="msapplication-TileImage" content="/pitpal.png" />
+
+  <!-- Favicon (Google requires these specific sizes) -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
   <!-- Open Graph / Facebook / WhatsApp Sharing -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="PitBox - Premium Movie Streaming">
-  <meta property="og:description" content="Stream the best Ugandan movies, international films, series, and latest releases in high quality. Your go-to platform for entertainment in Uganda and worldwide.">
-  <meta property="og:url" content="https://pitbox.fun">
-  <meta property="og:image" content="https://pitbox.fun/opengraph-image-p98pqg.png">
-  <meta property="og:image:alt" content="PitBox movie streaming platform homepage">
+  <meta property="og:title" content="PitBox - Premium Movie Streaming | Ugandan Films & Series">
+  <meta property="og:description"
+    content="Stream the best Ugandan movies, international films, series, and latest releases in high quality. Your go-to platform for entertainment in Uganda and worldwide.">
+  <meta property="og:url" content="https://www.pitbox.fun">
+  <meta property="og:image" content="https://www.pitbox.fun/opengraph-image-p98pqg.png">
+  <meta property="og:image:alt" content="PitBox movie streaming platform - Watch Ugandan and international movies">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="PitBox.fun">
+  <meta property="og:locale" content="en_US">
 
   <!-- Twitter / X Cards -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@merite">
-  <meta name="twitter:title" content="PitBox - Premium Movie Streaming">
-  <meta name="twitter:description" content="Watch Ugandan movies, Hollywood hits, and more on PitBox.fun - Fast, premium streaming for everyone.">
-  <meta name="twitter:image" content="https://pitbox.fun/opengraph-image-p98pqg.png">
+  <meta name="twitter:site" content="@pitboxfun">
+  <meta name="twitter:creator" content="@pitboxfun">
+  <meta name="twitter:title" content="PitBox - Premium Movie Streaming | Ugandan Films & Series">
+  <meta name="twitter:description"
+    content="Watch Ugandan movies, Hollywood hits, and more on PitBox.fun - Fast, premium streaming for everyone.">
+  <meta name="twitter:image" content="https://www.pitbox.fun/opengraph-image-p98pqg.png">
   <meta name="twitter:image:alt" content="PitBox streaming platform showcase">
+
+  <!-- JSON-LD Structured Data: Organization -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "PitBox",
+      "url": "https://www.pitbox.fun",
+      "logo": "https://www.pitbox.fun/pitpal.png",
+      "description": "Premium movie streaming platform featuring Ugandan movies, Hollywood blockbusters, and African series.",
+      "sameAs": []
+    }
+  </script>
+
+  <!-- JSON-LD Structured Data: WebSite with SearchAction -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "PitBox",
+      "alternateName": "PitBox.fun",
+      "url": "https://www.pitbox.fun",
+      "description": "Watch and stream the latest Ugandan movies, Hollywood blockbusters, series, and more in premium quality.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://www.pitbox.fun/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+
+  <!-- JSON-LD Structured Data: VideoOnDemandStore (Entertainment Platform) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PitBox",
+      "url": "https://www.pitbox.fun",
+      "applicationCategory": "EntertainmentApplication",
+      "operatingSystem": "Web",
+      "description": "Stream Ugandan movies, Hollywood blockbusters, and series in premium quality on PitBox.",
+      "offers": {
+        "@type": "Offer",
+        "category": "Subscription"
+      },
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "softwareVersion": "1.0"
+    }
+  </script>
+
+  <!-- JSON-LD Structured Data: BreadcrumbList -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.pitbox.fun/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Movies",
+          "item": "https://www.pitbox.fun/movies"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Series",
+          "item": "https://www.pitbox.fun/series"
+        }
+      ]
+    }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -15,7 +15,7 @@ import { useSeriesStore } from '@/hooks/use-store';
 export default function SeriesDetail() {
   const { id } = useParams();
   const seriesId = id || "";
-  
+
   // Phase 2: Use global store for episode progress
   const { progress, saveProgress } = useSeriesStore();
   const episodeIndex = progress[seriesId] || 0;
@@ -49,11 +49,24 @@ export default function SeriesDetail() {
   return (
     <div className="min-h-screen bg-black text-white relative pb-20 font-sans">
       {/* Phase 4: Dynamic Metadata */}
-      <SEO 
-        title={series.name} 
-        description={series.description} 
-        image={series.poster_url || ''} 
-        type="video.tv_show" 
+      <SEO
+        title={series.name}
+        description={series.description || `Watch ${series.name} on PitBox. Stream all episodes in premium quality.`}
+        image={series.poster_url || ''}
+        type="video.tv_show"
+        canonicalPath={`/series/${seriesId}`}
+        keywords={`${series.name}, ${series.genre || 'series'}, watch online, PitBox, stream, episodes, TV show`}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'TVSeries',
+          name: series.name,
+          description: series.description || '',
+          image: series.poster_url || '',
+          datePublished: series.release_date || '',
+          genre: series.genre || '',
+          numberOfEpisodes: series.episodes?.length || 0,
+          url: `https://pitbox.fun/series/${seriesId}`,
+        }}
       />
 
       <Navbar />
@@ -67,10 +80,10 @@ export default function SeriesDetail() {
 
         {/* Phase 4: Enhanced Player */}
         <div className="w-full bg-[#0a0a0a] mb-8 shadow-2xl">
-          <ArtPlayerComponent 
-            url={ep?.video_url || ''} 
-            poster={ep?.poster_url || series.poster_url || ''} 
-            title={`${series.name} - ${ep?.name}`} 
+          <ArtPlayerComponent
+            url={ep?.video_url || ''}
+            poster={ep?.poster_url || series.poster_url || ''}
+            title={`${series.name} - ${ep?.name}`}
             onEnded={() => {
               if (episodeIndex < (series.episodes?.length || 0) - 1) {
                 saveProgress(seriesId, episodeIndex + 1);
@@ -84,7 +97,7 @@ export default function SeriesDetail() {
             <h1 className="text-2xl md:text-3xl uppercase font-bold tracking-tight text-white mb-2">
               {series.name} {ep && ` - ${ep.name}`}
             </h1>
-            
+
             <div className="flex items-center gap-3 flex-wrap">
               <div className="bg-[#1a1a1a] px-3 py-1.5 text-xs font-bold text-[#888]">
                 {series.release_date?.slice(0, 4)} [cite: 857]
@@ -104,7 +117,7 @@ export default function SeriesDetail() {
               <ListVideo className="w-4 h-4 text-primary" />
               <h2 className="text-[11px] font-bold text-primary uppercase">Episode Selection</h2>
             </div>
-            
+
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {series.episodes?.map((e, i) => (
                 <button
@@ -112,19 +125,19 @@ export default function SeriesDetail() {
                   onClick={() => saveProgress(seriesId, i)}
                   className={cn(
                     "group relative flex flex-col gap-2 transition-all p-2 rounded border",
-                    episodeIndex === i 
-                      ? "bg-primary/5 border-primary/50" 
+                    episodeIndex === i
+                      ? "bg-primary/5 border-primary/50"
                       : "bg-[#0a0a0a] border-white/5 hover:border-white/20"
                   )}
                 >
                   <div className="relative aspect-video overflow-hidden bg-secondary">
-                    <img 
-                      src={e.poster_url || series.poster_url || ''} 
-                      alt="" 
+                    <img
+                      src={e.poster_url || series.poster_url || ''}
+                      alt={`${e.name || `Episode ${i + 1}`} - ${series.name}`}
                       className={cn(
                         "w-full h-full object-cover transition-transform duration-500",
                         episodeIndex === i ? "scale-105" : "group-hover:scale-105 opacity-60"
-                      )} 
+                      )}
                     />
                     <div className="absolute bottom-1 right-1 bg-black/80 px-1.5 py-0.5 text-[8px] font-bold text-white">
                       PART {i + 1} [cite: 871]

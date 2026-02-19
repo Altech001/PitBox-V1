@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Navbar from '@/components/Navbar';
+import SEO from '@/components/SEO';
 import { requestsApi, MovieRequestResponse } from '@/lib/requests';
 import { Loader2, Film, Clock, MessageSquare, AlertCircle } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -16,6 +17,11 @@ export default function RequestsPage() {
 
     return (
         <div className="min-h-screen bg-black text-white">
+            <SEO
+                title="Movie Requests"
+                description="View and track community movie requests on PitBox. Request your favorite movies and follow the latest content additions."
+                canonicalPath="/requests"
+            />
             <Navbar />
 
             <main className="max-w-4xl mx-auto pt-32 px-6 pb-24">

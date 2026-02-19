@@ -20,7 +20,7 @@ const Index = () => {
   const { data: allMovies, isLoading: isMoviesLoading } = useQuery({
     queryKey: queryKeys.movies.all,
     queryFn: () => moviesApi.getMovies(200, 0),
-    staleTime: 5 * 60 * 1000, 
+    staleTime: 5 * 60 * 1000,
   });
 
   const { heroMovies, latest, genreRows } = useMemo(() => {
@@ -73,11 +73,11 @@ const Index = () => {
       },
       { rootMargin: '900px' } // Load next page when user is 900px away
     );
-    
+
     if (loaderRef.current) {
       observer.observe(loaderRef.current);
     }
-    
+
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
@@ -94,9 +94,26 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO title="Home" />
+      <SEO
+        title="Home"
+        description="PitBox — Watch and stream the latest Ugandan movies, Hollywood blockbusters, series, and more in premium quality. Discover thrilling action, drama, comedy, and exclusive releases."
+        canonicalPath="/"
+        keywords="PitBox, Ugandan movies, Luganda films, movie streaming Uganda, watch movies online, Hollywood movies, African films, premium streaming"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'PitBox',
+          url: 'https://pitbox.fun',
+          description: 'Premium movie streaming platform featuring Ugandan movies, Hollywood blockbusters, and African series.',
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: 'https://pitbox.fun/search?q={search_term_string}',
+            'query-input': 'required name=search_term_string',
+          },
+        }}
+      />
       <Navbar />
-      
+
       {/* Hero and Row Sections */}
       <div className="px-4 md:px-6 max-w-7xl mx-auto pt-24">
         {isMoviesLoading ? (
@@ -120,19 +137,19 @@ const Index = () => {
             Discover Library
           </h2>
         </div>
-        
+
         {isDiscoverLoading ? (
           // Skeleton grid matching the actual grid exactly
-          <div 
-            className="grid gap-3 md:gap-4"
+          <div
+            className="grid gap-x-3 gap-y-4 md:gap-x-4 md:gap-y-2"
             style={{
               gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`
             }}
           >
             {Array.from({ length: columnCount * 4 }).map((_, i) => (
-              <div 
-                key={i} 
-                className="aspect-[2/3] bg-white/5 rounded-md animate-pulse" 
+              <div
+                key={i}
+                className="aspect-[2/3] bg-white/5 rounded-md animate-pulse"
               />
             ))}
           </div>
@@ -149,7 +166,7 @@ const Index = () => {
           {isFetchingNextPage && (
             <div className="flex flex-col items-center gap-2">
               <Loader2 className="w-6 h-6 animate-spin text-primary" />
-              <span className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.3em]">
+              <span className="text-[10px] font-black text-muted-foreground">
                 Loading Content
               </span>
             </div>

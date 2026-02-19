@@ -24,8 +24,16 @@ export default function Navbar() {
   const navItems = [
     { label: 'Movies', to: '/movies', icon: Film },
     { label: 'Series', to: '/series', icon: Tv },
-    { label: 'Requests', to: '/requests', icon: Clock },
+    { label: 'VJs', to: '/requests', icon: Clock },
     // { label: 'API Docs', to: '/docs', icon: Sparkles },
+  ];
+
+  const vjs = [
+    'VJ Emmy', 'VJ Junior', 'VJ Mark', 'VJ Jingo', 'VJ Ice P',
+    'VJ Kevo', 'VJ Sun', 'VJ Omutaka', 'VJ Pick', 'VJ T',
+    'VJ One', 'VJ Paul', 'VJ Kim', 'VJ Sam', 'VJ Ben',
+    'VJ Dan', 'VJ Alex', 'VJ Chris', 'VJ Max', 'VJ Leo',
+    'VJ Bob', 'VJ Ray'
   ];
 
   return (
@@ -45,31 +53,69 @@ export default function Navbar() {
 
         {/* Desktop Nav Links */}
         <div className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className="text-sm font-bold  text-muted-foreground hover:text-primary transition-colors relative py-1 group/nav"
-              activeClassName="text-foreground"
-            >
-              {item.label}
-              <span className={cn(
-                "absolute -bottom-1 left-0 right-0 h-0.5 bg-primary origin-left transition-transform duration-300",
-                location.pathname === item.to ? "scale-x-100" : ""
-              )} />
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            if (item.label === 'VJs') {
+              return (
+                <DropdownMenu key={item.label}>
+                  <DropdownMenuTrigger asChild>
+                    <button className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors relative py-1 group/nav flex items-center gap-1 focus:outline-none">
+                      {item.label}
+                      <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+                      <span className={cn(
+                        "absolute -bottom-1 left-0 right-0 h-0.5 bg-primary origin-left transition-transform duration-300 scale-x-0 group-hover/nav:scale-x-100"
+                      )} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-48 max-h-[400px] overflow-y-auto bg-black/90 backdrop-blur-2xl border-white/10 text-white scrollbar-thin scrollbar-thumb-primary/20">
+                    <DropdownMenuLabel className="text-primary text-xs uppercase tracking-widest px-4 py-2">Select VJ</DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-white/10" />
+                    {vjs.map((vj) => (
+                      <DropdownMenuItem
+                        key={vj}
+                        onClick={() => navigate(`/search?q=${vj}`)}
+                        className="cursor-pointer hover:bg-primary/10 hover:text-primary transition-colors px-4 py-2 text-sm"
+                      >
+                        {vj}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            }
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className="text-sm font-bold  text-muted-foreground hover:text-primary transition-colors relative py-1 group/nav"
+                activeClassName="text-foreground"
+              >
+                {item.label}
+                <span className={cn(
+                  "absolute -bottom-1 left-0 right-0 h-0.5 bg-primary origin-left transition-transform duration-300",
+                  location.pathname === item.to ? "scale-x-100" : ""
+                )} />
+              </NavLink>
+            );
+          })}
         </div>
 
-        {/* Search Bar - Responsive */}
-        <div className="flex-1 flex justify-center max-w-lg">
+        {/* Search Icon - Mobile only */}
+        <button
+          onClick={() => navigate('/search')}
+          className="md:hidden p-2 rounded-full text-muted-foreground hover:text-primary hover:bg-secondary transition-all"
+          aria-label="Search"
+        >
+          <Search className="w-5 h-5" />
+        </button>
+
+        {/* Search Bar - Desktop only */}
+        <div className="hidden md:flex flex-1 justify-center max-w-lg">
           <button
             onClick={() => navigate('/search')}
-            className="flex items-center gap-3 bg-secondary/50 hover:bg-secondary text-muted-foreground text-xs md:text-sm px-4 py-2.5 rounded-none border-white/5 hover:border-primary/30 transition-all w-full md:max-w-md group"
+            className="flex items-center gap-3 bg-secondary/50 hover:bg-secondary text-muted-foreground text-sm px-4 py-2.5 rounded-none border-white/5 hover:border-primary/30 transition-all w-full max-w-md group"
           >
             <Search className="w-4 h-4 group-hover:text-primary transition-colors" />
-            <span className="hidden sm:inline">Search movies & series...</span>
-            <span className="sm:hidden">Search...</span>
+            <span>Search movies & series...</span>
           </button>
         </div>
 

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import MediaCard from './MediaCard';
 
@@ -8,20 +8,14 @@ interface VirtualGridProps {
 }
 
 /**
- * VirtualGrid - Optimized Window Scroll Version
- * 
- * Key improvements:
- * - Proper gap handling in size calculations
- * - More accurate height estimation
- * - Better positioning with measurement tracking
- * - Defensive rendering to prevent layout breaks
+ * VirtualGrid - Uses measureElement for pixel-perfect row heights.
+ * No guessing or estimation — the virtualizer measures each row from the DOM.
  */
 export default function VirtualGrid({ items, columns = 6 }: VirtualGridProps) {
   const parentRef = useRef<HTMLDivElement>(null);
   const [offsetTop, setOffsetTop] = useState(0);
-  const [cardHeight, setCardHeight] = useState(350); // Will be measured
 
-  // Measure the grid's position from viewport top
+  // Measure the grid's offset from the top of the page
   useEffect(() => {
     const measureOffset = () => {
       if (parentRef.current) {
@@ -32,8 +26,7 @@ export default function VirtualGrid({ items, columns = 6 }: VirtualGridProps) {
     };
 
     measureOffset();
-    
-    // Remeasure on window resize (debounced)
+
     let timeoutId: NodeJS.Timeout;
     const handleResize = () => {
       clearTimeout(timeoutId);
@@ -47,31 +40,21 @@ export default function VirtualGrid({ items, columns = 6 }: VirtualGridProps) {
     };
   }, []);
 
-  // Measure actual card height from first rendered card
-  useEffect(() => {
-    const measureCardHeight = () => {
-      if (parentRef.current) {
-        const firstCard = parentRef.current.querySelector('[data-card]');
-        if (firstCard) {
-          const height = firstCard.getBoundingClientRect().height;
-          // Add gap (3 or 4 based on breakpoint - use average)
-          const estimatedGap = 14; // Between md:gap-4 (16px) and gap-3 (12px)
-          setCardHeight(height + estimatedGap);
-        }
-      }
-    };
-
-    // Measure after initial render
-    const timeoutId = setTimeout(measureCardHeight, 100);
-    return () => clearTimeout(timeoutId);
+  // Quick initial estimate based on viewport (only used before measurement)
+  const estimateRowHeight = useCallback(() => {
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 1024;
+    const containerWidth = Math.min(vw - 32, 1280);
+    const gap = 16;
+    const cardWidth = (containerWidth - gap * (columns - 1)) / columns;
+    return cardWidth * 1.5 + 26; // aspect-[2/3] + text + small gap
   }, [columns]);
 
   const rowCount = Math.ceil(items.length / columns);
 
   const rowVirtualizer = useWindowVirtualizer({
     count: rowCount,
-    estimateSize: () => cardHeight,
-    overscan: 3, // Reduced from 5 for better performance
+    estimateSize: estimateRowHeight,
+    overscan: 3,
     scrollMargin: offsetTop,
   });
 
@@ -81,33 +64,39 @@ export default function VirtualGrid({ items, columns = 6 }: VirtualGridProps) {
     <div ref={parentRef} className="w-full">
       <div
         className="relative w-full"
-        style={{ 
+        style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
-          minHeight: '350px' // Prevent collapse during initial render
+          minHeight: '200px',
         }}
       >
         {virtualItems.map((virtualRow) => {
           const startIndex = virtualRow.index * columns;
           const rowItems = items.slice(startIndex, startIndex + columns);
 
-          // Don't render empty rows
           if (rowItems.length === 0) return null;
 
           return (
             <div
               key={virtualRow.key}
-              className="absolute top-0 left-0 w-full grid gap-3 md:gap-4"
+              ref={rowVirtualizer.measureElement}
+              data-index={virtualRow.index}
+              className="absolute top-0 left-0 w-full pb-6"
               style={{
-                height: `${virtualRow.size}px`,
                 transform: `translateY(${virtualRow.start - rowVirtualizer.options.scrollMargin}px)`,
-                gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
               }}
             >
-              {rowItems.map((item) => (
-                <div key={item.id} className="h-full" data-card>
-                  <MediaCard item={item} size="sm" />
-                </div>
-              ))}
+              <div
+                className="grid gap-x-3 md:gap-x-4"
+                style={{
+                  gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                }}
+              >
+                {rowItems.map((item) => (
+                  <div key={item.id} data-card>
+                    <MediaCard item={item} />
+                  </div>
+                ))}
+              </div>
             </div>
           );
         })}

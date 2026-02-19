@@ -14,8 +14,8 @@ export function useResponsiveColumns() {
       const width = window.innerWidth;
       
       if (width < 640) {
-        // Mobile: 2 columns (grid-cols-2)
-        setColumnCount(2);
+        // Mobile: 3 columns
+        setColumnCount(3);
       } else if (width < 768) {
         // Small tablets: 4 columns (sm:grid-cols-4)
         setColumnCount(4);

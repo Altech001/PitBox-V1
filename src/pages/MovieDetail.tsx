@@ -44,13 +44,31 @@ export default function MovieDetail() {
   return (
     <div className="min-h-screen bg-black text-white relative pb-20 font-sans">
       {/* Dynamic SEO Metadata */}
-      <SEO 
-        title={movie.name} 
-        description={movie.description} 
-        image={movie.poster_url || ''} 
-        type="video.movie" 
+      <SEO
+        title={movie.name}
+        description={movie.description || `Watch ${movie.name} on PitBox. Stream in premium quality.`}
+        image={movie.poster_url || ''}
+        type="video.movie"
+        canonicalPath={`/movie/${movieId}`}
+        keywords={`${movie.name}, ${movie.genre || 'movie'}, watch online, PitBox, stream, Ugandan movies`}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Movie',
+          name: movie.name,
+          description: movie.description || '',
+          image: movie.poster_url || '',
+          datePublished: movie.release_date || '',
+          genre: movie.genre || '',
+          aggregateRating: movie.stars > 0 ? {
+            '@type': 'AggregateRating',
+            ratingValue: movie.stars.toFixed(1),
+            bestRating: '10',
+            worstRating: '0',
+          } : undefined,
+          url: `https://pitbox.fun/movie/${movieId}`,
+        }}
       />
-      
+
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 pt-24 md:pt-28">
@@ -63,10 +81,10 @@ export default function MovieDetail() {
 
         {/* Enhanced Player Section */}
         <div className="w-full bg-[#0a0a0a] mb-12 shadow-2xl">
-          <ArtPlayerComponent 
-            url={movie.video_url} 
-            poster={movie.poster_url || ''} 
-            title={movie.name} 
+          <ArtPlayerComponent
+            url={movie.video_url}
+            poster={movie.poster_url || ''}
+            title={movie.name}
             showSkipIntro={true}
           />
         </div>
@@ -92,7 +110,7 @@ export default function MovieDetail() {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex items-center gap-3">
                 <div className="inline-block bg-primary text-black px-4 py-1 text-[10px] font-bold tracking-wider uppercase">
                   {movie.genre?.split(',')[0].trim() || 'MOVIE'}

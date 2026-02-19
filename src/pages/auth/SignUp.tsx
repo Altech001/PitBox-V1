@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/providers/AuthProvider';
 import AuthLayout from '@/components/auth/AuthLayout';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -75,6 +76,11 @@ const SignUp = () => {
 
     return (
         <AuthLayout>
+            <SEO
+                title="Create Account"
+                description="Create a free PitBox account. Join Uganda's premier movie streaming platform and access exclusive content."
+                canonicalPath="/signup"
+            />
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="space-y-1.5 focus-within:translate-x-1 transition-transform">
                     <Label htmlFor="email" className="text-white/50 text-[10px] rounded-none  ml-1">Email Address</Label>

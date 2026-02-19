@@ -1,0 +1,83 @@
+{
+    "name": "PitBox - Premium Movie Streaming",
+    "short_name": "PitBox",
+    "description": "Watch and stream the latest Ugandan movies, blockbusters, series, and more in premium quality.",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#0a0a1a",
+    "theme_color": "#8B5CF6",
+    "scope": "/",
+    "lang": "en",
+    "dir": "ltr",
+    "categories": [
+        "entertainment",
+        "movies",
+        "streaming"
+    ],
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "48x48",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/opengraph-image-p98pqg.png",
+            "sizes": "1200x630",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "PitBox Homepage - Browse movies and series"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Browse Movies",
+            "short_name": "Movies",
+            "url": "/movies",
+            "description": "Explore the latest movies"
+        },
+        {
+            "name": "Browse Series",
+            "short_name": "Series",
+            "url": "/series",
+            "description": "Explore trending series"
+        },
+        {
+            "name": "My Account",
+            "short_name": "Account",
+            "url": "/account",
+            "description": "Manage your PitBox account"
+        }
+    ],
+    "prefer_related_applications": false,
+    "display_override": [
+        "standalone",
+        "minimal-ui"
+    ]
+}

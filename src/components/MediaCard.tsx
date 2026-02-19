@@ -20,14 +20,14 @@ export default function MediaCard({ item, locked }: Props) {
 
   return (
     <Link to={`/${type}/${item.id}`} className="group block w-full transition-transform duration-300 hover:scale-[1.02]">
-      <div className="relative aspect-[2/3] overflow-hidden bg-secondary border-white/5 mb-3 group-hover:border-primary/50">
-        <SafeImage 
-          src={posterUrl || ''} 
-          alt={title} 
+      <div className="relative aspect-[2/3] overflow-hidden bg-secondary border-white/5 mb-1 group-hover:border-primary/50">
+        <SafeImage
+          src={posterUrl || ''}
+          alt={title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           fallbackText={title}
         />
-        
+
         {isSeries && (
           <div className="absolute top-2 left-2 z-20">
             <div className="bg-primary px-2 py-0.5 text-black text-[10px] font-bold uppercase tracking-tighter">Series</div>
@@ -43,7 +43,7 @@ export default function MediaCard({ item, locked }: Props) {
         )}
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-0">
         <div className="flex items-center gap-3 text-[10px] md:text-xs font-medium text-muted-foreground">
           {year && <span className="opacity-60">{year}</span>}
           {item.vote_average > 0 && (

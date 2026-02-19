@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { moviesApi, normalizeSearchItem } from '@/lib/pitbox';
 import { useDebounce } from '@/hooks/use-debounce';
 import MediaCard from '@/components/MediaCard';
+import SEO from '@/components/SEO';
 import { DiscoverGridSkeleton } from '@/components/skeletons';
 
 export default function SearchPage() {
@@ -54,6 +55,12 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Search"
+        description="Search for movies, series, and content on PitBox. Find your next favorite film or TV show."
+        canonicalPath="/search"
+        noindex={true}
+      />
       {/* Search header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
         <div className="max-w-3xl mx-auto px-4 h-16 flex items-center gap-3">
